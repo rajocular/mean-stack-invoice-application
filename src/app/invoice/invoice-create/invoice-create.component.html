@@ -1,0 +1,131 @@
+<div class="container">
+  <div class="row">
+    <div style="margin: auto">
+      <mat-spinner *ngIf="loading"></mat-spinner>
+    </div>
+  </div>
+</div>
+<form class="example-form" [formGroup]="invoiceForm" (ngSubmit)="saveArea()" *ngIf="!loading">
+  <mat-form-field >
+    <mat-label>Buyer</mat-label>
+    <mat-select formControlName="client" required>
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let client of clients" [value]="client._id">{{client.name}}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="invoiceForm.controls.client.invalid">Must choose one client</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Choose a date">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="invoiceForm.controls.date.invalid">Choose a date</mat-error>
+  </mat-form-field><br>
+
+  <mat-form-field >
+    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="productControl" [matAutocomplete]="auto" required>
+    <mat-error *ngIf="productControl.invalid">Quantity required</mat-error>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input type="number" matInput [formControl]="quantityControl" placeholder="Quantity" required>
+    <mat-error *ngIf="quantityControl.invalid">Quantity required</mat-error>
+  </mat-form-field>
+  <button
+    mat-icon-button
+    color="primary"
+    type="button"
+    (click)="addProduct()">
+    <mat-icon>add_circle</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    color="warn"
+    type="button"
+    (click)="onReset() ">
+    <mat-icon>backspace</mat-icon>
+  </button>
+  <mat-error *ngIf="buyerError">Must add at least one product to the Invoice!</mat-error><br>
+  <mat-error *ngIf="productError">Product doesn't exist! Choose one from list</mat-error><br>
+  <div *ngIf="productCreated">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Product</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Cost Price</th>
+        <th scope="col">Sale Price</th>
+        <th scope="col">MRP</th>
+        <th scope="col">Tax</th>
+        <th scope="col">Tax Amount</th>
+        <th scope="col">Total</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody formArrayName="billItems"
+             *ngFor="let item of invoiceForm.get('billItems').controls; let i = index;">
+        <tr [formGroupName]="i" class="table-data">
+          <th scope="row">
+            {{i+1}}
+          </th>
+          <td>
+            <input formControlName="name">
+          </td>
+          <td>
+            <input formControlName="quantity">
+          </td>
+          <td>
+            <input formControlName="cost_price">
+          </td>
+          <td>
+            <input formControlName="sale_price">
+          </td>
+          <td>
+            <input formControlName="mrp">
+          </td>
+          <td>
+            <input formControlName="tax">
+          </td>
+          <td>
+            <input formControlName="tax_amount">
+          </td>
+          <td>
+            <input formControlName="total">
+          </td>
+          <td>
+            <mat-icon color="warn" (click)="onDelete(i, item)" style="cursor: pointer">remove_circle</mat-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-right">
+      <h6>Amount: {{invoiceAmount}}</h6>
+      <h6>Tax Amount: {{invoiceTaxAmount}}</h6>
+      <h6>Total: {{invoiceTotal}}</h6>
+    </div>
+  </div>
+
+  <div *ngIf="mode === 'create'">
+    <button
+      mat-raised-button
+      color="accent"
+      type="submit" >Add</button><br>
+  </div>
+
+  <div *ngIf="mode === 'edit'" class="text-center">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit" >Update</button>
+      <button style="margin-left: 5%" mat-raised-button color="warn" (click)="goBack()">Cancel</button>
+  </div>
+
+  <small *ngIf="error">Product with this name already exists! Try using a different one</small>
+</form>
+

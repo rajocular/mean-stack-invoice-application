@@ -1,0 +1,116 @@
+
+  <mat-vertical-stepper #stepper>
+    <mat-step [stepControl]="personalDetails">
+      <form [formGroup]="personalDetails">
+        <ng-template matStepLabel>Fill out your personal details</ng-template>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="First Name" formControlName="firstname" required>
+          <mat-error *ngIf="personalDetails.controls.firstname.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Last Name" formControlName="lastname" required>
+          <mat-error *ngIf="personalDetails.controls.lastname.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Address" formControlName="address" required>
+          <mat-error *ngIf="personalDetails.controls.address.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="City" formControlName="city" required>
+          <mat-error *ngIf="personalDetails.controls.city.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="State" formControlName="state" required>
+          <mat-error *ngIf="personalDetails.controls.state.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Pincode" formControlName="pincode" required>
+          <mat-error *ngIf="personalDetails.controls.pincode.invalid">Should not be empty! Max length is 6</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Country" formControlName="country" required>
+          <mat-error *ngIf="personalDetails.controls.country.invalid">Should not start with number or empty</mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Contact" formControlName="contact" required>
+          <mat-error *ngIf="personalDetails.controls.contact.invalid">Should not be empty! Length should be 10</mat-error>
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="organizationDetails">
+      <form [formGroup]="organizationDetails">
+        <ng-template matStepLabel>Fill your organization details</ng-template>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Organization" formControlName="organization" required>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Gst Number" formControlName="gstnumber" required>
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="databaseDetails">
+      <form [formGroup]="databaseDetails">
+        <ng-template matStepLabel>Fill out your credentials</ng-template>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Username" formControlName="username" required>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input type="password" matInput placeholder="Password" formControlName="password" required>
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>You're all set!</ng-template>
+      <button mat-raised-button (click)="checkConnection()" color="accent" *ngIf="!connectionStatus">Check Connectivity</button>
+      <button mat-raised-button (click)="register()" color="accent" *ngIf="connectionStatus">Register</button>
+
+    </mat-step>
+  </mat-vertical-stepper>
+
+<!--<form [formGroup]="registerForm" class="example-form">-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="First Name" formControlName="firstName" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Last Name" formControlName="lastName" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Organization" formControlName="organization" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Gst Number" formControlName="gstnumber" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Address" formControlName="address" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="City" formControlName="city" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="State" formControlName="state" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Pincode" formControlName="pincode" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Country" formControlName="country" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Contact" formControlName="contact" required>-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="MongoDb URL" formControlName="databaseUrl" required>-->
+<!--  </mat-form-field>-->
+<!--  <button mat-raised-button color="accent" (click)="register()">Register</button>-->
+<!--</form>-->

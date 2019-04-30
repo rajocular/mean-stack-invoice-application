@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div style="margin: auto">
+      <mat-spinner *ngIf="loading"></mat-spinner>
+    </div>
+  </div>
+</div>
+
+<form class="example-form" [formGroup]="productForm" (ngSubmit)="saveArea()" *ngIf="!loading">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Name" formControlName="name">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="HSN" formControlName="hsncode">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Tax</mat-label>
+    <mat-select formControlName="tax" >
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let tax of taxOptions" [value]="tax">{{tax}}</mat-option>
+    </mat-select>
+  </mat-form-field>%
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <input matInput placeholder="Tax" formControlName="tax">-->
+<!--  </mat-form-field>-->
+  <mat-form-field class="example-full-width">
+    <input type="number" matInput placeholder="Cost Price" formControlName="cost_price">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input type="number" matInput placeholder="Sale Price" formControlName="sale_price">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input type="number" matInput placeholder="MRP" formControlName="mrp">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input type="number" matInput placeholder="Stock" formControlName="stock">
+  </mat-form-field>
+  <button
+    mat-raised-button
+    color="accent"
+    type="submit" *ngIf="mode === 'create'">Add</button><br>
+  <div class="row" *ngIf="mode === 'edit'">
+    <div class="col">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit">Update</button><br>
+    </div>
+    <div class="col text-right">
+      <button mat-raised-button color="warn" (click)="goBack()">Cancel</button>
+    </div>
+  </div>
+  <small *ngIf="error">Product with this name already exists! Try using a different one</small>
+</form>
+

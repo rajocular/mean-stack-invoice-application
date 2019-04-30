@@ -1,0 +1,28 @@
+.example-form {
+  min-width: 150px;
+  width: 100%;
+  margin: auto;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+
+small{
+  color: red;
+}
+
+.table-data input{
+  border: none;
+  background-color: transparent;
+}
+
+mat-form-field{
+  margin: auto;
+}
+

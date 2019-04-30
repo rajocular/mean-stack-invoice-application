@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div style="margin: auto">
+      <mat-spinner *ngIf="loading"></mat-spinner>
+    </div>
+  </div>
+</div>
+<form class="example-form" [formGroup]="clientForm" *ngIf="!loading">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Name" formControlName="name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Area</mat-label>
+    <mat-select formControlName="area" >
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let area of areas" [value]="area._id">{{area.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Address" formControlName="address">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Contact" formControlName="contact">
+    <mat-error *ngIf="invalid">Must be a number of length exactly 10</mat-error>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Pincode" formControlName="pincode">
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="GST Number" formControlName="gstnumber">
+  </mat-form-field>
+  <mat-error *ngIf="error">GSTNumber Conflict! Should be unique for both buyers and manufacturers</mat-error><br>
+  <button
+    mat-raised-button
+    color="accent"
+    type="submit" *ngIf="mode === 'create'" (click)="saveArea()">Add</button><br>
+  <div class="row" *ngIf="mode === 'edit'">
+    <div class="col">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit" (click)="saveArea()">Update</button><br>
+    </div>
+    <div class="col text-right">
+      <button mat-raised-button color="warn" (click)="goBack()">Cancel</button>
+    </div>
+  </div>
+</form>
+

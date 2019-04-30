@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="row">
+    <div style="margin: auto">
+      <mat-spinner *ngIf="contentLoading"></mat-spinner>
+    </div>
+  </div>
+</div>
+<form class="example-form" [formGroup]="areaForm" (ngSubmit)="saveArea()" *ngIf="!contentLoading">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Code" formControlName="code">
+    <mat-error *ngIf="invalid">Must be a number</mat-error>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Name" formControlName="name">
+  </mat-form-field>
+  <mat-error *ngIf="error && mode === 'create'">Name/Code exists already! Try a different one</mat-error><br>
+  <mat-error *ngIf="error && mode === 'edit'">Unable to update! Code/name might be taken already</mat-error><br>
+
+  <button
+    mat-raised-button
+    color="accent"
+    type="submit" *ngIf="mode === 'create'">Add Area</button><br>
+  <div class="row" *ngIf="mode === 'edit'">
+    <div class="col">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit">Update</button><br>
+    </div>
+    <div class="col text-right">
+     <button mat-raised-button color="warn" (click)="goBack()">Cancel</button>
+    </div>
+  </div>
+</form>
+

@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <span>
+    <a mat-button routerLink="/invoice" routerLinkActive="mat-accent">Invoice</a>
+  </span>
+  <span class="spacer"></span>
+  <ul>
+    <li>
+      <a mat-button routerLink="/product" routerLinkActive="mat-accent">Products</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/client/buyer" routerLinkActive="mat-accent">Buyers</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/client/manufacturer" routerLinkActive="mat-accent">Manufacturers</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/area" routerLinkActive="mat-accent">Area</a>
+    </li>
+    <li  *ngIf="isAuthenticated">
+      <a mat-stroked-button (click)="logout()" color="warn">Logout</a>
+    </li>
+  </ul>
+</mat-toolbar>
