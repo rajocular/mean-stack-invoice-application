@@ -4,7 +4,7 @@
 2. Navigate to the project folder and run `npm install`
 3. Create a mongodb database instance.
 4. Copy the database connection uri.
-5. Open `node-backend/db/mongodb.js` and replace the `database=<your_database_uri>` with your uri.
+5. Create a `.env` file in the project's root folder (`invoice/.env`) and store your uri as `MONGO_DB_URL=<uri>`.
 6. Open up two terminal windows and run the following commands
 - `npm start`
 - `npm run start-nodemon`
