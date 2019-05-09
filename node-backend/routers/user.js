@@ -56,7 +56,9 @@ router.post('/logoutAll', authCheck, async (req, res) => {
 });
 
 router.get('/myaccount', authCheck, async (req, res) => {
-  res.send(req.user)
+  res.status(200).json({
+    user: req.user
+  })
 });
 
 

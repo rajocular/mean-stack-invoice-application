@@ -6,11 +6,12 @@
   </div>
 </div>
 <form class="example-form" [formGroup]="invoiceForm" (ngSubmit)="saveArea()" *ngIf="!loading">
-  <mat-form-field >
+  <div  class="exclude-print">
+  <mat-form-field>
     <mat-label>Buyer</mat-label>
     <mat-select formControlName="client" required>
       <mat-option>None</mat-option>
-      <mat-option *ngFor="let client of clients" [value]="client._id">{{client.name}}</mat-option>
+      <mat-option *ngFor="let client of clients" [value]="client._id" (click)="clientData(client)">{{client.name}}</mat-option>
     </mat-select>
     <mat-error *ngIf="invoiceForm.controls.client.invalid">Must choose one client</mat-error>
   </mat-form-field>
@@ -51,9 +52,35 @@
   </button>
   <mat-error *ngIf="buyerError">Must add at least one product to the Invoice!</mat-error><br>
   <mat-error *ngIf="productError">Product doesn't exist! Choose one from list</mat-error><br>
+  </div>
   <div *ngIf="productCreated">
-    <table class="table table-striped">
-      <thead>
+    <button
+      mat-raised-button
+      color="accent"
+      class="mb-3 exclude-print"
+      (click)="printInvoice($event)"
+      >Generate Bill</button>
+    <div class="container-fluid mb-5 mt-5 bg-light print-content" >
+      <div class="row">
+        <div class="col">
+          <h5>{{userData.firstname}} {{userData.lastname}}</h5>
+          <h6>GST No: {{userData.gstnumber}}</h6>
+          <h6>{{userData.address}}</h6>
+          <h6>{{userData.city}}</h6>
+          <h6>{{userData.state.toUpperCase()}}, {{userData.country}}, {{userData.pincode}}</h6>
+        </div>
+        <div class="col text-right" *ngIf="clientDetails">
+          <h5>{{clientDetails.name}}</h5>
+          <h6>GST No: {{clientDetails.gstnumber}}</h6>
+          <h6>{{clientDetails.address}}</h6>
+          <h6>{{clientDetails.pincode}}</h6>
+          <h6>contact: {{clientDetails.contact}}</h6>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-striped table-responsive d-print-table">
+      <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
         <th scope="col">Product</th>
@@ -104,21 +131,30 @@
       </tbody>
     </table>
 
-    <div class="text-right">
-      <h6>Amount: {{invoiceAmount}}</h6>
-      <h6>Tax Amount: {{invoiceTaxAmount}}</h6>
-      <h6>Total: {{invoiceTotal}}</h6>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col text-right">
+          <h6>Amount: </h6>
+          <h6>Tax Amount: </h6>
+          <h6>Total: </h6>
+        </div>
+        <div class="col">
+          <h6>{{invoiceAmount}}</h6>
+          <h6>{{invoiceTaxAmount}}</h6>
+          <h6>{{invoiceTotal}}</h6>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="mode === 'create'">
+  <div *ngIf="mode === 'create'"  class="exclude-print">
     <button
       mat-raised-button
       color="accent"
       type="submit" >Add</button><br>
   </div>
 
-  <div *ngIf="mode === 'edit'" class="text-center">
+  <div *ngIf="mode === 'edit'" class="text-center exclude-print">
       <button
         mat-raised-button
         color="primary"
@@ -126,6 +162,6 @@
       <button style="margin-left: 5%" mat-raised-button color="warn" (click)="goBack()">Cancel</button>
   </div>
 
-  <small *ngIf="error">Product with this name already exists! Try using a different one</small>
+  <small *ngIf="error" class="exclude-print">Product with this name already exists! Try using a different one</small>
 </form>
 

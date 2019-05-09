@@ -8,7 +8,7 @@ const invoiceRoutes: Routes = [
   {path: '', component: InvoiceComponent, children:[
       {path: '', component:InvoiceListComponent},
       {path: 'create', component: InvoiceCreateComponent},
-      {path: 'edit/:id', component: InvoiceCreateComponent},
+      {path: 'edit/:id', component: InvoiceCreateComponent}
     ]},
 ];
 

@@ -23,6 +23,8 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   error: boolean;
   clients: Client[];
   products: Product[];
+  userData;
+  clientDetails;
 
   invoiceAmount = 0;
   invoiceTaxAmount = 0;
@@ -37,6 +39,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   buyerError: boolean;
   productError: boolean;
   loading = false;
+  contentModified: boolean;
 
   private productCreated = false;
   private mode = "create";
@@ -48,7 +51,13 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
+    this.contentModified = false;
     this.fetchProducts();
+    this.invoiceService.getUserData().subscribe(data=>{
+      this.userData = data.user
+    }, error=>{
+      console.log(error)
+    });
 
     this.invoiceService.invoiceAddError.subscribe(error =>{
       this.error = error;
@@ -68,9 +77,11 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
     this.route.paramMap.subscribe((paramMap: ParamMap)=>{
       if(paramMap.has('id')) {
+        this.fetchProducts();
         this.invoiceService.getInvoice(paramMap.get('id'))
           .subscribe(data => {
             this.loading = false;
+            this.clientDetails = data.invoice.client;
             for (let bill in data.invoice.bills){
               let billData = data.invoice.bills[bill];
               this.billItems = this.invoiceForm.get('billItems') as FormArray;
@@ -111,7 +122,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   }
 
-  private createForm(){
+  private createForm() {
     this.invoiceForm = this.fb.group({
       client: new FormControl(this.clients, Validators.required),
       date: new FormControl(new Date(), Validators.required),
@@ -123,28 +134,30 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     if(!this.productCreated){
       this.productCreated = true;
     }
+    if(!this.products){
+      this.router.navigate(['/invoice'])
+    }else {
+      let productData = this.products.filter((item) => item.name == product)[0];
+      let amount = productData.sale_price * quantity;
+      this.invoiceAmount += amount;
 
-    let productData = this.products.filter((item)=> item.name == product)[0];
+      let tax_amount = +((amount * productData.tax) / 100).toFixed(4);
+      this.invoiceTaxAmount += tax_amount;
 
-    let amount = productData.sale_price * quantity;
-    this.invoiceAmount += amount;
+      this.invoiceTotal += amount + tax_amount;
 
-    let tax_amount = +((amount * productData.tax)/100).toFixed(4);
-    this.invoiceTaxAmount += tax_amount;
-
-    this.invoiceTotal += amount+tax_amount;
-
-    return this.fb.group({
-      name: new FormControl({value: productData.name, disabled: true, validators: [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z0-9]*$')]}),
-      quantity: new FormControl({value: quantity, disabled: true, validators: [Validators.required]}),
-      cost_price: new FormControl({value: productData.cost_price, disabled: true, validators: [Validators.required]}),
-      sale_price: new FormControl({value: productData.sale_price, disabled: true, validators: [Validators.required]}),
-      mrp: new FormControl({value:productData.mrp, disabled: true, validators: [Validators.required]}),
-      tax: new FormControl({value: productData.tax, disabled: true, validators: [Validators.required]}),
-      amount: new FormControl({value: amount, disabled: true, validators: [Validators.required]}),
-      tax_amount: new FormControl({value:tax_amount, disabled: true, validators: [Validators.required]}),
-      total: new FormControl({value: amount+tax_amount, disabled: true, validators: [Validators.required]})
-    });
+      return this.fb.group({
+        name: new FormControl({value: productData.name, disabled: true}),
+        quantity: new FormControl({value: quantity, disabled: true}),
+        cost_price: new FormControl({value: productData.cost_price, disabled: true}),
+        sale_price: new FormControl({value: productData.sale_price, disabled: true}),
+        mrp: new FormControl({value: productData.mrp, disabled: true}),
+        tax: new FormControl({value: productData.tax, disabled: true}),
+        amount: new FormControl({value: amount, disabled: true}),
+        tax_amount: new FormControl({value: tax_amount, disabled: true}),
+        total: new FormControl({value: amount + tax_amount, disabled: true})
+      });
+    }
   }
 
   private _filter(value: string): string[] {
@@ -154,7 +167,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   }
 
   addProduct() {
-
+    this.contentModified = true;
     if(this.quantityControl.valid && this.productControl.valid) {
       let productData = this.products.filter((item)=> item.name == this.productControl.value)[0];
       if(this.quantityControl.value>productData.stock){
@@ -162,6 +175,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
         return;
       }
       if(productData) {
+        productData.stock -= +this.quantityControl.value;
         this.billItems = this.invoiceForm.get('billItems') as FormArray;
         this.billItems.push(this.createItem(this.productControl.value, this.quantityControl.value));
       }
@@ -172,6 +186,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   }
 
   saveArea() {
+    this.contentModified = false;
     if(this.invoiceForm.invalid || this.billItems.value.length==0){
       this.buyerError = this.invoiceForm.controls.billItems.invalid == true;
       return;
@@ -186,7 +201,12 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
         total: bill.total
       });
     }
+    for(let product in this.products){
+      let prodData = this.products[product];
+      this.productService.updateStock(prodData._id, prodData)
+    }
     if(this.mode === 'create') {
+
       this.invoiceService.addInvoice({
         _id: null,
         client: this.invoiceForm.value.client,
@@ -228,9 +248,24 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     this.router.navigate(['/invoice']);
   }
 
+  printInvoice(e) {
+    // this.router.navigate(['/invoice/print/', this.invoiceId]);
+    e.preventDefault();
+    window.print()
+  }
+
+  clientData(client){
+    this.clientDetails = client;
+  }
+
 
   ngOnDestroy() {
     // this.productCreated =false;
+    if(this.contentModified){
+      if(confirm("would you like to save Invoice before you leave")) {
+        this.saveArea()
+      }
+    }
   }
 
 }

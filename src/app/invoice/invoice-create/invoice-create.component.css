@@ -26,3 +26,17 @@ mat-form-field{
   margin: auto;
 }
 
+.print-content{
+  display: none;
+}
+
+@media print {
+  .exclude-print{
+    display: none;
+  }
+  .print-content{
+    display: block;
+    margin-bottom: 10%;
+  }
+}
+

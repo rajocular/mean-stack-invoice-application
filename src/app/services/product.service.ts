@@ -46,13 +46,16 @@ export class ProductService {
 
   updateProduct(id, data) {
     this.http.put<{message: string, product: Product}>(this.url+"/"+id,  {id, ...data})
-      .subscribe(updatedData =>{
+      .subscribe(() =>{
         this.router.navigate(['/product']);
-      },(error) =>{
+      },() =>{
         this.productAddError.next(true);
       });
   }
 
+  updateStock(id, data) {
+    this.http.put(this.url+"/"+id, {...data}).subscribe()
+  }
 
   editProduct(product: Product) {
     this.router.navigate(['/product/edit',product._id]);

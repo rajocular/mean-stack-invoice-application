@@ -15,7 +15,6 @@ export class LoginService {
   constructor(private http: HttpClient, private router: Router) {}
 
   getToken() {
-
     return this.token;
   }
 

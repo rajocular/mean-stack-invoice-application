@@ -24,6 +24,10 @@ export class InvoiceService{
       });
   }
 
+  getUserData() {
+    return this.http.get<{user: any}>("http://localhost:3000/myaccount");
+  }
+
   getInvoiceUpdateListener() {
     return this.invoiceUpdated.asObservable();
   }
